@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<% include ../common/head %>
+	
+</head>
+<body class="container">
+
+	<header>		
+	</header>
+
+	<main>
+                 <div id="login">
+		<form method="POST" action="/validate" class="registerForm" name="login"> 
+		<p>name:<input type="text" name="username" required ></p>
+		<p>password:<input type="text" name="password" required ></p>
+		<button type="submit" >Sign in</button>
+		</form>
+		
+	</div>
+	</main>
+
+	<footer>
+	</footer>
+</body>
+</html>
+

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<% include head %>
+	
+	
+	<!-- because react was a requirement -->
+	<script type="application/javascript" src="https://unpkg.com/react@16.0.0/umd/react.production.min.js"></script>
+  <script type="application/javascript" src="https://unpkg.com/react-dom@16.0.0/umd/react-dom.production.min.js"></script>
+  <script type="application/javascript" src="https://unpkg.com/babel-standalone@6.26.0/babel.js"></script>
+</head>
+<body class="container">
+
+	<header>
+	<h2> Welcome to the support app <%=user %> </h2>		
+	</header>
+
+	<main>
+	<div id="root">
+	<script type="text/babel">
+// Obtain the root 
+    const rootElement = document.getElementById('root')
+//set up style
+var chatStyle = {
+  backgroundColor: 'lightblue',
+  overflowY: scroll,
+  height:400,
+  margin: 30,
+  width:600
+};    
+    
+// Create a ES6 class component    
+    class MessageArea extends React.Component { 
+// Use the render function to return JSX component      
+    render() { 
+        return (
+        <div id="chatArea" class="chatArea" style={chatStyle}>
+        <ul id="messages" >
+        <li> {this.props.startMessage} </li>        
+        </ul>
+      </div>
+      );
+      } 
+    }
+// Create a function to wrap up your component
+function App(){
+  return(
+  <div>
+    <MessageArea startMessage="Our support will be with you momentarily. Please wait a moment."/>
+  </div>
+  )
+}
+
+
+// render to browser
+    ReactDOM.render(
+      <App />,
+      rootElement
+    )
+</script>
+    </div>
+      
+      <div style="margin: 25px; padding:10px">
+      <input class="inputMessage" id="msgInput" placeholder="Type message here"/>
+       <button onclick="sendMessage()">Send message</button> 
+		</div>
+		<% if (support===true) { %>
+		<div style="margin: 25px">
+		<button onclick="nextClient()"> Move to next client </button> 
+		</div>
+		<% }  %>
+		<div style="margin: 25px">
+		<button onclick="clearMessages()"> Clear </button> 
+		</div>
+	
+	
+	  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	  <script src="/socket.io/socket.io.js"></script>
+	  <script>
+	  //some react to use it
+	  
+	  var messageList=[];
+		   class AddMessage extends React.Component
+                {
+                    render()
+                    {
+                        return React.createElement('li', null, this.props.response);
+                    }
+                }
+                  
+	  
+	  
+	  function sendMessage(){
+       socket.emit("msg", {usr: "<%=user %>", msg: $("#msgInput").val(), support: "<%=support %>"});	
+          $("#msgInput").val("");
+	   }		  
+	  function clearMessages() {
+	  	 $("#messages").empty();
+	  }
+			  
+	  
+	   var socket = io();
+	   socket.emit("join", {usr: "<%=user %>", support: <%= support %>});
+	   
+	   
+	   
+	    <% if (support===true) { %>
+	   function nextClient(){
+	     socket.emit("nextUser", {usr: "<%=user %>", support: <%= support %>});
+	   }
+		<% } %>	   
+	   
+	   
+	   socket.on('disconnect', () => {
+    console.log('you have been disconnected');
+});
+		socket.on('msg', (msg) => {
+		//one way of doing things
+	/*	messageList.push(msg);
+		ReactDOM.render(
+                    React.createElement(SetMessages, { response : messageList }),
+                    document.getElementById('messages')
+                );	
+                */
+		$( ".messages" ).append( "<li>"+msg+"</li>" );// <- a bit nicer :)
+    console.log(msg);
+});
+	  
+	  
+	  
+	  </script>
+	<footer>
+	</footer>
+</body>
+</html>
